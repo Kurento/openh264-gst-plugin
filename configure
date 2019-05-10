@@ -23,6 +23,9 @@ set -o xtrace
 # Configure Apt
 # -------------
 
+# Disable interactive prompts
+export DEBIAN_FRONTEND="noninteractive"
+
 # Enable all source repositories
 sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list
 
@@ -34,7 +37,6 @@ apt-get update
 # --------------------
 
 SOURCE_NAME="gst-plugins-bad1.0"
-DEBIAN_FRONTEND="noninteractive"
 
 apt-get build-dep --yes "$SOURCE_NAME"
 
