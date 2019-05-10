@@ -55,9 +55,11 @@ NAMES="$(sed -rn 's/^AG_GST_CHECK_FEATURE\((\w+),.*$/\L\1/p' configure.ac)"
 
 # Convert all names into '--disable-*' arguments
 ARGS=""
+set +o xtrace
 for NAME in $NAMES; do
     ARGS="$ARGS --disable-${NAME}"
 done
+set -o xtrace
 
 # Run './configure' with almost everything disabled.
 # * '--without-plugins' disables all internal plugins that don't depend on any
