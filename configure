@@ -54,6 +54,7 @@ cd ./"$SOURCE_NAME"*/
 NAMES="$(sed -rn 's/^AG_GST_CHECK_FEATURE\((\w+),.*$/\L\1/p' configure.ac)"
 
 # Convert all names into '--disable-*' arguments
+ARGS=""
 for NAME in $NAMES; do
     ARGS="$ARGS --disable-${NAME}"
 done
