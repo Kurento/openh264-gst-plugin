@@ -1,0 +1,19 @@
+Source: openh264-gst-plugin
+Priority: optional
+Maintainer: Kurento <kurento@googlegroups.com>
+Build-Depends: debhelper (>= 9),
+ devscripts,
+ fakeroot,
+ openh264
+Standards-Version: 4.0.0
+Vcs-Git: https://github.com/Kurento/openh264-gst-plugin.git
+Vcs-Browser: https://github.com/Kurento/openh264-gst-plugin
+Homepage: https://www.kurento.org
+
+Package: openh264-gst-plugin
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: OpenH264 plugin for GStreamer
+ This package contains the GStreamer plugin file which allows to use OpenH264
+ from your media pipelines.

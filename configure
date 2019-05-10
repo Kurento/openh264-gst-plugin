@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# Preparation script for building the OpenH264 GStreamer plugin.
+#
+# This shell script downloads all dependencies and tools needed to build the
+# 'gst-plugins-bad' module in a system where the OpenH264 library is installed.
+# Doing so has the effect of enabling the generation of an OpenH264 GStreamer
+# plugin, during the configuration phase of 'gst-plugins-bad'.
+
+
+
+# Shell setup
+# -----------
+
+# Bash options for strict error checking
+set -o errexit -o errtrace -o pipefail -o nounset
+
+# Trace all commands
+set -o xtrace
+
+
+
+# Configure Apt
+# -------------
+
+# Enable all source repositories
+sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list
+
+apt-get update
+
+
+
+# Install dependencies
+# --------------------
+
+SOURCE_NAME="gst-plugins-bad1.0"
+DEBIAN_FRONTEND="noninteractive"
+
+apt-get build-dep --yes "$SOURCE_NAME"
+
+
+
+# Build gst-plugins-bad
+# ---------------------
+
+apt-get source "$SOURCE_NAME"
+
+cd ./"$SOURCE_NAME"*/
+
+# Inspect the 'configure.ac' file to obtain the names of all plugins that
+# can be enabled or disabled with '--enable-*' and '--disable-*' flags.
+NAMES="$(sed -rn 's/^AG_GST_CHECK_FEATURE\((\w+),.*$/\L\1/p' configure.ac)"
+
+# Convert all names into '--disable-*' arguments
+for NAME in $NAMES; do
+    ARGS="$ARGS --disable-${NAME}"
+done
+
+# Run './configure' with almost everything disabled.
+# * '--without-plugins' disables all internal plugins that don't depend on any
+#   external library.
+# * External plugins must be disabled one by one, to end up enabling only the
+#   one we are interested in, OpenH264.
+#   It is possible to disable all external plugins with '--disable-external',
+#   but that would also force disabling the OpenH264 plugin.
+export DEB_CONFIGURE_EXTRA_FLAGS=" \
+    --disable-dependency-tracking \
+    --disable-examples \
+    --without-plugins \
+    $ARGS \
+    --enable-openh264 \
+"
+
+# Also disable hardcoded flag to generate documentation
+sed -i 's/--enable-gtk-doc/--disable-gtk-doc/' debian/rules
+
+# Launch the build
+# Package construction will fail, but only after having built our file
+debuild -b -uc -us -- install-arch

@@ -1,0 +1,5 @@
+openh264-gst-plugin (1.0.0-0kurento1) unstable; urgency=medium
+
+  * Initial Release.
+
+ -- Juan Navarro <juan.navarro@gmx.es>  Fri, 10 May 2019 00:09:56 +0200

@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: openh264-gst-plugin
+Upstream-Contact: Kurento <kurento@googlegroups.com>
+Source: https://github.com/Kurento/openh264-gst-plugin
+
+Files: *
+Copyright: 2018, Kurento (https://www.kurento.org)
+License: Apache-2.0
+ On Debian systems, the complete text of the Apache version 2.0 license
+ can be found in "/usr/share/common-licenses/Apache-2.0".
