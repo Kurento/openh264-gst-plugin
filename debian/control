@@ -15,5 +15,4 @@ Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: OpenH264 plugin for GStreamer
- This package contains the GStreamer plugin file which allows to use OpenH264
- from your media pipelines.
+ OpenH264 plugin for GStreamer 1.0.
