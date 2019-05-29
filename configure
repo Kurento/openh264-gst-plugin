@@ -81,4 +81,4 @@ sed -i 's/--enable-gtk-doc/--disable-gtk-doc/' debian/rules
 
 # Launch the build
 # Package construction will fail, but only after having built our file
-debuild -b -uc -us -- install-arch
+debuild -b -uc -us --target=install-arch || true
