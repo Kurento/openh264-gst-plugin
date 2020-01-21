@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Preparation script for building the OpenH264 GStreamer plugin.
+# Preparation script to build the OpenH264 GStreamer plugin.
 #
 # This shell script downloads all dependencies and tools needed to build the
 # 'gst-plugins-bad' module in a system where the OpenH264 library is installed.
