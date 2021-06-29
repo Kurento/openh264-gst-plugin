@@ -49,6 +49,14 @@ apt-get source "$SOURCE_NAME"
 
 cd ./"$SOURCE_NAME"*/
 
+# Quick fix for an error that gstopenh264dec raises when starting to decode,
+# about trying to handle and unref a null frame.
+# This patch was tested to work with gst-plugins-bad 1.14.5; different versions
+# may need adjusting. In that case, maybe it makes sense to keep a different
+# patch file for each of the GStreamer versions that we want to support.
+patch -R ./ext/openh264/gstopenh264dec.cpp \
+    ../gstreamer_1.14.5_gstopenh264dec.cpp.diff
+
 # Inspect the 'configure.ac' file to obtain the names of all plugins that
 # can be enabled or disabled with '--enable-*' and '--disable-*' flags.
 NAMES="$(sed -rn 's/^AG_GST_CHECK_FEATURE\((\w+),.*$/\L\1/p' configure.ac)"
