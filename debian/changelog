@@ -1,3 +1,20 @@
+openh264-gst-plugin (1.0.0-0kurento1.18.04~20210614162614.gbp92ba0d) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @92ba0dbc033b4388707aca8fe53b20150a241004 **
+
+  [ Juan Navarro ]
+  * Adjust path to install file
+  * Add debian/README.kurento
+  * debian/control: Minor change: Single-line summary
+  * debian: Minor: Delete example files, update Copyright to 2020
+
+  [ root ]
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+
+ -- Saul Labajo <slabajo@naevatec.com>  Mon, 14 Jun 2021 16:26:32 +0000
+
 openh264-gst-plugin (1.0.0-0kurento1) unstable; urgency=medium
 
   * Initial Release.
