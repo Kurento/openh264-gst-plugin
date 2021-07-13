@@ -5,11 +5,11 @@ After dropping support for our old forks of GStreamer 1.8, and moving to the off
 
 In the case of OpenH264, this royalty-free implementation of the H.264 standard is needed to ensure legally safe encoding of H.264 video for users of Kurento, without the need to pay for MPEG-LA licensing costs (for more information see https://www.openh264.org/).
 
-The OpenH264 library is used by Firefox and other open-source software, and Kurento is no exception. OpenH264 itself doesn't contain needed code to integrate with GStreamer as a plugin; instead, a GStreamer plugin is automatically built as part of 'gst-plugins-bad' if the OpenH264 library is found to be installed in the system **at build time**.
+The OpenH264 library is used by Firefox and other open-source software, and Kurento is no exception. OpenH264 itself doesn't contain needed code to integrate with GStreamer as a plugin; instead, a GStreamer plugin is automatically built as part of [gst-plugins-bad](https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad) if the OpenH264 library is found to be installed in the system **at build time**.
 
-This means that the official 'gst-plugins-bad' package from Ubuntu should have been built already with OpenH264 plugin support, but that is not the case. To solve this, we need to download the source code of 'gst-plugins-bad' and re-build after making sure that OpenH264 is installed in the system.
+This means that the official *gst-plugins-bad* package from Ubuntu should have been built already with OpenH264 plugin support, but that is not the case. To solve this, we need to download the source code of *gst-plugins-bad* and re-build after making sure that OpenH264 is installed in the system.
 
-If no OpenH264 is installed, the configure script from 'gst-plugins-bad' prints this info:
+If no OpenH264 is installed, the configure script from *gst-plugins-bad* prints this info:
 
     configure: *** checking feature: openh264 library ***
     configure: *** for plug-ins: openh264 ***
@@ -44,11 +44,9 @@ and this file gets generated:
 Build method
 ------------
 
-In order to build the OpenH264 GStreamer plugin, this project contains a './configure' file that will download and build 'gst-plugins-bad' while ensuring that OpenH264 is already installed in the system.
+In order to build the OpenH264 GStreamer plugin, this project contains a `./configure` file that will download and build *gst-plugins-bad* while ensuring that OpenH264 is already installed in the system.
 
-The usual Debian packaging methods are followed, by defining a 'debian/rules' file which simply calls `dh`, part of the Debhelper tooling.
-
-`dh` will in turn call `dh_auto_configure`, which calls our own `./configure`. Next, it will call `dh_auto_build` which in this case does nothing because all the grunt work is done already by the configure step. Finally, the 'debian/*.install' file will tell `dh_auto_install` where to find the GStreamer plugin file that got built, and package it into a .deb file.
+The usual Debian packaging methods are followed, by defining a `debian/rules` file which simply calls `dh`, part of the Debhelper tooling: `dh` itself calls `dh_auto_configure`, which calls our own `./configure`. Next, `dh` continues by calling `dh_auto_build` which in this case does nothing because all the grunt work is done already by the configure step. Finally, the `debian/*.install` file will tell `dh_auto_install` where to find the GStreamer plugin file that got built, and package it into a *.deb* file.
 
 
 
