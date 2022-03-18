@@ -9,7 +9,7 @@ External repositories
 Package description
 ===================
 
-After dropping support for our old forks of GStreamer 1.8, and moving to the official GStreamer packages provided by Ubuntu, we still need to build some GStreamer plugins that are *not* included by default in the official Ubuntu packages, such as libusrsctp and OpenH264.
+After dropping support for our old forks of GStreamer 1.8, and moving to the official GStreamer packages provided by Ubuntu, we still need to build some GStreamer plugins that are *not* included by default in the official Ubuntu packages, such as OpenH264.
 
 In the case of OpenH264, this royalty-free implementation of the H.264 standard is needed to ensure legally safe encoding of H.264 video for users of Kurento, without the need to pay for MPEG-LA licensing costs (for more information see https://www.openh264.org/).
 
