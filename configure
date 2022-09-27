@@ -26,8 +26,10 @@ set -o xtrace
 # Disable interactive prompts
 export DEBIAN_FRONTEND="noninteractive"
 
-# Enable all source repositories
-sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list
+# Uncomment system's source repositories.
+sed --regexp-extended --in-place \
+    's/# *(deb-src.*(main|restricted|universe|multiverse))/\1/' \
+    /etc/apt/sources.list
 
 apt-get update
 
