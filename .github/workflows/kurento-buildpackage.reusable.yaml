@@ -1,0 +1,73 @@
+name: "Run kurento-buildpackage (Reusable workflow)"
+
+on:
+  # Triggered from other workflows.
+  workflow_call:
+    inputs:
+      jobDistros:
+        description: "List of Ubuntu codenames to build for."
+        required: true
+        # There is no `list` type, so use a raw JSON array and `fromJson()`.
+        # Example: '["xenial", "bionic", "focal"]'
+        type: "string"
+      jobGitName:
+        description: "Git branch or tag that should be checked out, if it exists."
+        required: true
+        type: "string"
+      jobGitNameFallback:
+        description: "Git branch or tag that should be checked out, if `jobGitName` does not exist."
+        required: false
+        type: "string"
+      jobRelease:
+        description: "Enable to build release versions. Disable for development builds."
+        required: false
+        type: "boolean"
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        jobDistro: ${{ fromJson(inputs.jobDistros) }}
+    timeout-minutes: 30
+    steps:
+      # Action: https://github.com/actions/checkout
+      - name: "Checkout"
+        uses: "actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c" # v3.3.0
+        with:
+          repository: "Kurento/openh264-gst-plugin"
+          ref: "${{ inputs.jobGitName }}"
+
+      - name: "Configure the environment for ci-scripts/"
+        run: |
+          ### TODO: Remove branch checkout
+          [ -d kurento ] || git clone --depth 1 --branch ci-server https://github.com/Kurento/kurento.git
+
+          echo "$PWD/kurento/ci-scripts" >>$GITHUB_PATH
+          echo "KURENTO_SCRIPTS_HOME=$PWD/kurento/ci-scripts" >>$GITHUB_ENV
+          echo "JOB_TIMESTAMP=$(date --utc +%Y%m%d%H%M%S)" >>$GITHUB_ENV
+
+      # Action: https://github.com/actions/download-artifact
+      - name: "Copy artifacts from previous jobs"
+        id: "copy-artifacts"
+        uses: "actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a" # v3.0.2
+        with:
+          name: "artifacts"
+          path: "artifacts/"
+
+      - name: "Run job script"
+        env:
+          JOB_DISTRO: "${{ matrix.jobDistro }}"
+          JOB_GIT_NAME: "${{ inputs.jobGitName }}"
+          JOB_GIT_NAME_FALLBACK: "${{ inputs.jobGitNameFallback }}"
+          JOB_RELEASE: "${{ inputs.jobRelease }}"
+          DISABLE_APT_PROXY: "true"
+          INSTALL_PATH: "${{ steps.copy-artifacts.outputs.download-path }}"
+        run: "kurento_ci_job_package_debian.sh"
+
+      # Action: https://github.com/actions/upload-artifact
+      - name: "Archive the artifacts"
+        uses: "actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce" # v3.1.2
+        with:
+          name: "artifacts"
+          path: "*.*deb"

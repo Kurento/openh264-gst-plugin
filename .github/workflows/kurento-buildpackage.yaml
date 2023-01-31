@@ -1,0 +1,37 @@
+name: "Run kurento-buildpackage"
+
+on:
+  # Triggered manually.
+  workflow_dispatch:
+    inputs:
+      jobDistros:
+        description: "List of Ubuntu codenames to build for."
+        required: true
+        # There is no `list` type, so use a raw JSON array and `fromJson()`.
+        # Example: '["xenial", "bionic", "focal"]'
+        type: "string"
+        default: '["focal"]'
+      jobGitName:
+        description: "Git branch or tag that should be checked out, if it exists."
+        required: true
+        type: "string"
+        default: "master"
+      jobGitNameFallback:
+        description: "Git branch or tag that should be checked out, if `jobGitName` does not exist."
+        required: false
+        type: "string"
+        default: ""
+      jobRelease:
+        description: "Enable to build release versions. Disable for development builds."
+        required: false
+        type: "boolean"
+        default: false
+
+jobs:
+  libsrtp:
+    uses: "./.github/workflows/kurento-buildpackage.reusable.yaml"
+    with:
+      jobDistros: "${{ inputs.jobDistros }}"
+      jobGitName: "${{ inputs.jobGitName }}"
+      jobGitNameFallback: "${{ inputs.jobGitNameFallback }}"
+      jobRelease: ${{ inputs.jobRelease }}
