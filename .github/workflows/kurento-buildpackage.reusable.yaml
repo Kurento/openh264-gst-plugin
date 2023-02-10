@@ -5,21 +5,24 @@ on:
   workflow_call:
     inputs:
       jobDistros:
-        description: "List of Ubuntu codenames to build for."
+        description: "List of Ubuntu codenames to build for"
         required: true
         # There is no `list` type, so use a raw JSON array and `fromJson()`.
         # Example: '["xenial", "bionic", "focal"]'
         type: "string"
+        default: '["focal"]'
       jobGitName:
-        description: "Git branch or tag that should be checked out, if it exists."
-        required: true
-        type: "string"
-      jobGitNameFallback:
-        description: "Git branch or tag that should be checked out, if `jobGitName` does not exist."
+        description: "Non-default git branch or tag that should be checked out, if it exists"
         required: false
         type: "string"
+        default: "master"
+      jobGitNameFallback:
+        description: "Non-default git branch or tag that should be checked out, if `jobGitName` does not exist"
+        required: false
+        type: "string"
+        default: ""
       jobRelease:
-        description: "Enable to build release versions. Disable for development builds."
+        description: "Enable to build release versions; disable for development builds"
         required: false
         type: "boolean"
 
@@ -31,18 +34,25 @@ jobs:
         jobDistro: ${{ fromJson(inputs.jobDistros) }}
     timeout-minutes: 30
     steps:
+      - name: "Check for non-default git ref"
+        id: "git-ref"
+        run: |
+          if [[ -n "${{ inputs.jobGitName }}" ]]; then
+            echo "value=${{ inputs.jobGitName }}" >>$GITHUB_OUTPUT
+          else
+            echo "value=main" >>$GITHUB_OUTPUT
+          fi
+
       # Action: https://github.com/actions/checkout
       - name: "Checkout"
         uses: "actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c" # v3.3.0
         with:
           repository: "Kurento/openh264-gst-plugin"
-          ref: "${{ inputs.jobGitName }}"
+          ref: "${{ steps.git-ref.outputs.value }}"
 
       - name: "Configure the environment for ci-scripts/"
         run: |
-          ### TODO: Remove branch checkout
-          [ -d kurento ] || git clone --depth 1 --branch ci-server https://github.com/Kurento/kurento.git
-
+          [ -d kurento ] || git clone --depth 1 https://github.com/Kurento/kurento.git
           echo "$PWD/kurento/ci-scripts" >>$GITHUB_PATH
           echo "KURENTO_SCRIPTS_HOME=$PWD/kurento/ci-scripts" >>$GITHUB_ENV
           echo "JOB_TIMESTAMP=$(date --utc +%Y%m%d%H%M%S)" >>$GITHUB_ENV
